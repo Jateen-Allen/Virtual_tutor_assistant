@@ -7,5 +7,6 @@ sounddevice
 numpy 
 gunicorn
 Werkzeug==2.0.3
+google-genai
 
 
