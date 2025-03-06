@@ -5,6 +5,7 @@ pillow
 mss
 sounddevice
 numpy 
-Flask
 gunicorn
+Werkzeug>=2.0.0
+
 
