@@ -5,3 +5,6 @@ pillow
 mss
 sounddevice
 numpy 
+Flask
+gunicorn
+
