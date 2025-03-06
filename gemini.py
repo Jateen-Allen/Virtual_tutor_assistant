@@ -78,7 +78,10 @@ MODEL = "models/gemini-2.0-flash-exp"
 
 DEFAULT_MODE = "none"
 
-client = genai.Client(api_key="AIzaSyBxxD4CK16MCP0hT7o_n_VWsTBceOncV8M",http_options={"api_version": "v1alpha"})
+client = genai.Client(
+    api_key=os.environ.get("GENAI_KEY"),
+    http_options={"api_version": "v1alpha"}
+)
 
 
 # While Gemini 2.0 Flash is in experimental preview mode, only one of AUDIO or
