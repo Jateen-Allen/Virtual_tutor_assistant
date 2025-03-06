@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Virtual Tutor Assistant</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #d4e0e7, #a3b9cc);
+            color: #16213e;
+            min-height: 100vh;
+        }
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 100px;  /* Increased from 20px to move logo right */
+            width: 100px;
+            height: auto;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.3);
+            backdrop-filter: blur(4px);
+            margin-top: 8rem;
+        }
+        h1 {
+            color: #16213e;  /* Darker color for better contrast */
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin: 20px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 34px;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        input:checked + .slider {
+            background: linear-gradient(45deg, #4fd1c5, #2196F3);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .mode-buttons {
+            margin: 20px;
+        }
+        .mode-buttons button {
+            padding: 12px 24px;
+            margin: 0 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #4fd1c5, #2196F3);
+            color: #fff;
+            opacity: 0.6;
+        }
+        .mode-buttons button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0.8;
+        }
+        .active {
+            opacity: 1 !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <img src="{{ url_for('static', filename='images/allen-career-institute-logo-png_seeklogo-482569.png') }}" alt="Logo" class="logo">
+    <div class="container">
+        <h1>Virtual Tutor Assistant</h1>
+        
+        <div class="mode-buttons">
+            <button id="screenMode" class="active" onclick="setMode('screen')">Screen Mode</button>
+            <button id="cameraMode" onclick="setMode('camera')">Camera Mode</button>
+        </div>
+
+        <div>
+            <label class="switch">
+                <input type="checkbox" id="toggleSwitch" onchange="toggleProcess()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        let currentMode = 'screen';
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('screenMode').classList.toggle('active', mode === 'screen');
+            document.getElementById('cameraMode').classList.toggle('active', mode === 'camera');
+        }
+
+        async function toggleProcess() {
+            const toggle = document.getElementById('toggleSwitch');
+            const status = document.getElementById('status');
+
+            try {
+                if (toggle.checked) {
+                    const response = await fetch('/start', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ mode: currentMode })
+                    });
+                    const data = await response.json();
+                    status.textContent = data.message;
+                    status.style.backgroundColor = data.status === 'success' ? '#d4edda' : '#f8d7da';
+                } else {
+                    const response = await fetch('/stop', {
+                        method: 'POST'
+                    });
+                    const data = await response.json();
+                    status.textContent = data.message;
+                    status.style.backgroundColor = data.status === 'success' ? '#d4edda' : '#f8d7da';
+                }
+            } catch (error) {
+                status.textContent = 'Error: ' + error.message;
+                status.style.backgroundColor = '#f8d7da';
+                toggle.checked = false;
+            }
+        }
+    </script>
+</body>
+</html> 
