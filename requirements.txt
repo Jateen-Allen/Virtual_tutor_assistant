@@ -1,7 +1,6 @@
 flask==2.0.1
 google-generativeai
 opencv-python
-pyaudio
 pillow
 mss
 sounddevice
